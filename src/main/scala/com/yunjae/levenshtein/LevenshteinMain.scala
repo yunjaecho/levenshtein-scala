@@ -35,12 +35,15 @@ object LevenshteinMain extends App {
         val rate2 = getTextSimilarity(b2cItem.cateNm, posItem.stdFullNm)
         val rate3 = getTextSimilarity(b2cItem.cateNm, posItem.stdNm)
         val rate4 = getTextSimilarity(b2cItem.stdNm, posItem.stdNm)
-        (b2cItem.itemCd, posItem.stdCd, rate1 + rate2 + rate3 + rate4)
+        val rate5 = getTextSimilarity(b2cItem.itemNm, posItem.stdNm)
+        (b2cItem.itemCd, posItem.stdCd, rate1 + rate2 + rate3 + rate4 + rate5)
       }
       .minBy(_._3)
   }
 
-  results.foreach(println)
+  results.foreach { item =>
+    println(s"UPDATE B2C_ITEM SET STD_CODE = '${item._2}' WHERE ITEM_CD = '${item._1}';")
+  }
 
 
 }

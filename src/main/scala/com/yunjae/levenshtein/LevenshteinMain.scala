@@ -8,7 +8,8 @@ case class PosmallStdInfo(stdCd: String, stdNm: String, stdFullNm: String)
 
 object LevenshteinMain extends App {
   val b2cItems = Source
-    .fromResource("b2cItemList.txt")
+    //.fromResource("b2cItemList.txt")
+    .fromResource("b2cItemCateList.txt")
     .getLines
     .map { items =>
       val item = items.split(s"\\t")
@@ -16,7 +17,8 @@ object LevenshteinMain extends App {
     }.toList
 
   val posmallStd = Source
-    .fromResource("posmallStdCode.txt")
+    //.fromResource("posmallStdCode.txt")
+    .fromResource("posmallCate.txt")
     .getLines
     .map { items =>
       val item = items.split(s"\\t")
@@ -36,13 +38,15 @@ object LevenshteinMain extends App {
         val rate3 = getTextSimilarity(b2cItem.cateNm, posItem.stdNm)
         val rate4 = getTextSimilarity(b2cItem.stdNm, posItem.stdNm)
         val rate5 = getTextSimilarity(b2cItem.itemNm, posItem.stdNm)
-        (b2cItem.itemCd, posItem.stdCd, rate1 + rate2 + rate3 + rate4 + rate5)
+        val rate6 = getTextSimilarity(b2cItem.itemNm, posItem.stdFullNm)
+        (b2cItem.itemCd, posItem.stdCd, rate1 + rate2 + rate3 + rate4 * 1.4 + rate5 * 1.5 + rate6 * 1.3)
       }
       .minBy(_._3)
   }
 
   results.foreach { item =>
-    println(s"UPDATE B2C_ITEM SET STD_CODE = '${item._2}' WHERE ITEM_CD = '${item._1}';")
+    //println(s"UPDATE B2C_ITEM SET STD_CODE = '${item._2}' WHERE ITEM_CD = '${item._1}';")
+    println(s"UPDATE B2C_ITEM SET CATE_NO = ${item._2} WHERE ITEM_CD = '${item._1}';")
   }
 
 
